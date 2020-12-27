@@ -1,4 +1,10 @@
 import os
+import sys
+
+# check for vault file
+if not os.path.isfile('vault.conf') :
+    print('vault.conf file not found!')
+    sys.exit(1)
 
 # generate encryption key
 os.system("openssl rand -base64 128 > rawkey.tmp")
