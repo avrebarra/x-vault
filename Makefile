@@ -1,10 +1,20 @@
+## init: init vault
+init:
+	@echo init vault...
+	@python3 ./bin/init.py
+	@echo done
+
 ## bake: bake vault
 bake:
-	@echo unimplemented
+	@echo baking...
+	@python3 ./bin/bake.py
+	@echo done
 
 ## unbake: unbake vault
 unbake:
-	@echo unimplemented
+	@echo unbaking...
+	@python3 ./bin/unbake.py
+	@echo done
 
 .PHONY: help
 all: help
