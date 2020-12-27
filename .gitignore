@@ -1,6 +1,5 @@
 *.key
 *.tmp
 
-vault.conf
-cauldron
+*.conf
 tmp

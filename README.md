@@ -3,8 +3,8 @@ simple primitive secret management experiment using openssl asymmetric encryptio
 
 ## Required
 To test out this x requires:
+- pip & python3
 - openssl
-- python
 - make
 
 ## Usage
