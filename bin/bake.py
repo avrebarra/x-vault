@@ -14,13 +14,13 @@ if not os.path.isfile('keys/rsa.key.pub'):
     print('prebake/bake skipped: public key not found')
     sys.exit(1)
 
-# check for cauldron file
-cauldron_files = glob.glob('cauldron.conf')
-if len(cauldron_files) >= 1 :
-    print('found cauldron file!')
+# check for prevault file
+prevault_files = glob.glob('prevault.conf')
+if len(prevault_files) >= 1 :
+    print('found prevault file!')
 
     # encrypt all files
-    for file in cauldron_files:
+    for file in prevault_files:
         print(f'prebaking: encrypting conf file {file}!')
 
         # generate encryption key
@@ -44,10 +44,10 @@ if not os.path.isfile('keys/rsa.key'):
     print('bake skipped: private key not found')
     sys.exit(0)
 
-# check for prebaked cauldron files
-prebaked_files = glob.glob('cauldron.conf.prebake')
+# check for prebaked prevault files
+prebaked_files = glob.glob('prevault.conf.prebake')
 if len(prebaked_files) >= 1 :
-    print('prebaked files found in cauldron!')
+    print('prebaked files found in prevault!')
 
     # unbake vault for concatenation
     os.system("make unbake")
