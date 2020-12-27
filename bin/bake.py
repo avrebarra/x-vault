@@ -10,7 +10,7 @@ from deepmerge import always_merger
 # =========================================
 
 # ensure public key
-if not os.path.isfile('keys/rsa.pub.pem.key'):
+if not os.path.isfile('keys/rsa.key.pub'):
     print('prebake/bake skipped: public key not found')
     sys.exit(1)
 
@@ -25,7 +25,7 @@ if len(cauldron_files) >= 1 :
 
         # generate encryption key
         os.system(f"openssl rand -base64 128 > {file}.rawkey.tmp")
-        os.system(f"openssl rsautl -encrypt -inkey ./keys/rsa.pub.pem.key -pubin -in {file}.rawkey.tmp -out {file}.key.prebake")
+        os.system(f"openssl rsautl -encrypt -inkey ./keys/rsa.key.pub -pubin -in {file}.rawkey.tmp -out {file}.key.prebake")
 
         # encrypt all files
         os.system(f"openssl enc -aes-256-cbc -salt -in {file} -out {file}.prebake -pass file:{file}.rawkey.tmp")
@@ -40,7 +40,7 @@ if len(cauldron_files) >= 1 :
 # =========================================
 
 # ensure private key
-if not os.path.isfile('keys/rsa.pem.key'):
+if not os.path.isfile('keys/rsa.key'):
     print('bake skipped: private key not found')
     sys.exit(0)
 
@@ -60,7 +60,7 @@ if len(prebaked_files) >= 1 :
         origin_file = re.sub('\.prebake$', '', file)
 
         # decrypt all files
-        os.system(f"openssl rsautl -decrypt -inkey keys/rsa.pem.key -in {origin_file}.key.prebake -out {origin_file}.rawkey.tmp")
+        os.system(f"openssl rsautl -decrypt -inkey keys/rsa.key -in {origin_file}.key.prebake -out {origin_file}.rawkey.tmp")
         os.system(f"openssl enc -d -aes-256-cbc -in {origin_file}.prebake -out {origin_file} -pass file:{origin_file}.rawkey.tmp")
 
         # join data
@@ -85,7 +85,7 @@ if os.path.isfile('vault.conf') :
 
     # generate encryption key
     os.system("openssl rand -base64 128 > rawkey.tmp")
-    os.system("openssl rsautl -encrypt -inkey ./keys/rsa.pub.pem.key -pubin -in rawkey.tmp -out vault/key")
+    os.system("openssl rsautl -encrypt -inkey ./keys/rsa.key.pub -pubin -in rawkey.tmp -out vault/key")
 
     # encrypt all files
     os.system("openssl enc -aes-256-cbc -salt -in vault.conf -out vault/vault -pass file:rawkey.tmp")

@@ -9,14 +9,11 @@ To test out this x requires:
 
 ## Usage
 ### Initializing
-Vault requires rsa_id registered in `~/.ssh/id_rsa`. If it's not already exist, you can generate one for host machine with:
+Vault requires a public and private RSA key pair. You can generate one with openssl:
 ```sh
-$ ssh-keygen
-```
-
-And setup vault project with:
-```sh
-$ make init # will setup keys folder
+$ ssh-keygen -f keys/rsa.key
+$ ssh-keygen -m pem -f keys/rsa.key
+$ openssl rsa -in ./keys/rsa.key -pubout -outform pem > ./keys/rsa.key.pub
 ```
 
 ### Baking and unbaking vault
