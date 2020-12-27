@@ -3,6 +3,7 @@ import sys
 import glob
 import re
 import toml
+from deepmerge import always_merger
 
 # =========================================
 #                 PREBAKE
@@ -30,14 +31,13 @@ if len(cauldron_files) >= 1 :
         os.system(f"openssl enc -aes-256-cbc -salt -in {file} -out {file}.prebake -pass file:{file}.rawkey.tmp")
 
         # clean tmp file
+        print("removing", f"{file}.rawkey.tmp")
         os.remove(f"{file}.rawkey.tmp")
 
 
 # =========================================
 #                  BAKE
 # =========================================
-
-def merge_copy(d1, d2): return {k: merge_copy(d1[k], d2[k]) if k in d1 and isinstance(d1[k], dict) and isinstance(d2[k], dict) else d2[k] for k in d2}
 
 # ensure private key
 if not os.path.isfile('keys/rsa.pem.key'):
@@ -65,12 +65,13 @@ if len(prebaked_files) >= 1 :
 
         # join data
         data = toml.load(f"{origin_file}")
-        vault_data = merge_copy(vault_data,data)
+        vault_data = always_merger.merge(vault_data,data)
 
         # delete bake file
         os.remove(f"{origin_file}")
         os.remove(f"{origin_file}.prebake")
         os.remove(f"{origin_file}.key.prebake")
+        os.remove(f"{origin_file}.rawkey.tmp")
 
     # update vault.conf
     f = open("vault.conf", "w")
