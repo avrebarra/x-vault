@@ -1,0 +1,9 @@
+
+[defaults]
+# This is the default location of the inventory file, script, or directory that Ansible will use to determine what hosts it has available to talk to
+inventory = inventory.yml
+deprecation_warnings = false
+
+[privilege_escalation]
+become = yes
+become_method = sudo
