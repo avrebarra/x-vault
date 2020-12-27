@@ -13,10 +13,10 @@ if not os.path.isfile('keys/rsa.pub.pem.key'):
     print('prebake/bake skipped: public key not found')
     sys.exit(1)
 
-# check for cauldron config file
-cauldron_files = glob.glob('cauldron/*.conf')
+# check for cauldron file
+cauldron_files = glob.glob('cauldron.conf')
 if len(cauldron_files) >= 1 :
-    print('conf files found in cauldron!')
+    print('found cauldron file!')
 
     # encrypt all files
     for file in cauldron_files:
@@ -28,6 +28,9 @@ if len(cauldron_files) >= 1 :
 
         # encrypt all files
         os.system(f"openssl enc -aes-256-cbc -salt -in {file} -out {file}.prebake -pass file:{file}.rawkey.tmp")
+
+        # clean tmp file
+        os.remove(f"{file}.rawkey.tmp")
 
 
 # =========================================
@@ -42,7 +45,7 @@ if not os.path.isfile('keys/rsa.pem.key'):
     sys.exit(0)
 
 # check for prebaked cauldron files
-prebaked_files = glob.glob('cauldron/*.conf.prebake')
+prebaked_files = glob.glob('cauldron.conf.prebake')
 if len(prebaked_files) >= 1 :
     print('prebaked files found in cauldron!')
 
@@ -54,14 +57,20 @@ if len(prebaked_files) >= 1 :
     for file in prebaked_files:
         print(f'prebaking: decrypting file {file}!')
 
-        origfilename = re.sub('\.prebake$', '', file)
+        origin_file = re.sub('\.prebake$', '', file)
 
         # decrypt all files
-        os.system(f"openssl rsautl -decrypt -inkey keys/rsa.pem.key -in {origfilename}.key.prebake -out {origfilename}.rawkey.tmp")
-        os.system(f"openssl enc -d -aes-256-cbc -in {origfilename}.prebake -out {origfilename} -pass file:{origfilename}.rawkey.tmp")
+        os.system(f"openssl rsautl -decrypt -inkey keys/rsa.pem.key -in {origin_file}.key.prebake -out {origin_file}.rawkey.tmp")
+        os.system(f"openssl enc -d -aes-256-cbc -in {origin_file}.prebake -out {origin_file} -pass file:{origin_file}.rawkey.tmp")
 
-        data = toml.load(f"{origfilename}")
+        # join data
+        data = toml.load(f"{origin_file}")
         vault_data = merge_copy(vault_data,data)
+
+        # delete bake file
+        os.remove(f"{origin_file}")
+        os.remove(f"{origin_file}.prebake")
+        os.remove(f"{origin_file}.key.prebake")
 
     # update vault.conf
     f = open("vault.conf", "w")
