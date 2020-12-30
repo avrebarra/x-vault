@@ -12,32 +12,82 @@ To test out this x requires:
 Vault requires a public and private RSA key pair. If you dont have one, you can generate one with openssl:
 ```sh
 $ make init
+$ rm ./vault/*
 ```
 
 ### Baking and unbaking vault
-> **To bake the vault you only need public key. To unbake you need private key.**
+> **To bake the vault you need public key (`rsa.key.pub`)**
+
+> **To unbake you need private key (`rsa.key`).**
 
 Baking and unbaking vault are as simple as:
 ```sh
-# unbake default vault file
-$ make unbake
-unbaking...
-done
-
-# see unbaked vault file (or update it as you want)
+# test with sample vault file
+$ cp vault.conf.sample vault.conf
 $ cat vault.conf
 [vault]
-samantha = mysql://localhost:3306/organizer?user=root&password=root
-meta = mysql://localhost:3306/organizer?user=root&password=root
-corona = mysql://localhost:3306/organizer?user=root&password=root
-afala = mysql://localhost:3306/organizer?user=root&password=root
-core = 37a31642-7d70-40d9-a754-499a6ff0806f
-subcore = 9b229056-8e83-42fe-ba08-3eafe477ac09
+afala = "mysql://localhost:3306/organizer?user=root&password=root"
+meta = "mysql://localhost:3306/organizer?user=root&password=root"
+subcore = "9b229056-8e83-42fe-ba08-3eafe477ac09"
+samantha = "mysql://localhost:3306/organizer?user=root&password=root"
+corona = "mysql://localhost:3306/organizer?user=root&password=root"
+core = "37a31642-7d70-40d9-a754-499a6ff0806f"
 
-# rebake vault.conf file
+# bake vault
 $ make bake
-baking...
+vault.conf file found!
+baking afala
+baking meta
+baking subcore
+baking samantha
+baking corona
+baking core
 done
+
+# unbake vault file
+$ make unbake
+afala
+meta
+subcore
+samantha
+corona
+core
+done
+```
+
+### Updating only one key
+> **Again, to update a key you need the public key (`rsa.key.pub`)**
+
+You can update a key by adding the specified key to vault.conf file:
+```sh
+$ nano vault.conf
+$ cat vault.conf
+[vault]
+core = "updated_value"
+
+$ make bake
+vault.conf file found!
+baking core
+done
+
+$ make unbake
+afala
+meta
+subcore
+samantha
+corona
+core
+done
+
+$ cat vault.conf
+[vault]
+afala = "mysql://localhost:3306/organizer?user=root&password=root"
+meta = "mysql://localhost:3306/organizer?user=root&password=root"
+subcore = "9b229056-8e83-42fe-ba08-3eafe477ac09"
+samantha = "mysql://localhost:3306/organizer?user=root&password=root"
+corona = "mysql://localhost:3306/organizer?user=root&password=root"
+core = "updated_value"
+
 ```
 
 
