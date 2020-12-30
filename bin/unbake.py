@@ -1,21 +1,35 @@
+import glob
 import os
 import toml
-from deepmerge import always_merger
+import re
 
-# cache changes
 current_vault = {}
-if os.path.isfile('vault.conf'):
-    current_vault = toml.load("vault.conf")
 
-# decrypt
-os.system("openssl rsautl -decrypt -inkey keys/rsa.key -in vault/key -out rawkey.tmp")
-os.system("openssl enc -d -aes-256-cbc -in vault/vault -out vault.conf -pass file:rawkey.tmp")
-unbaked_vault = toml.load("vault.conf")
+# read all key files
+for file in glob.glob('vault/*.key'):
+    name = re.sub('\.key$', '', file)
+    name = re.sub('^vault/', '', name)
+    print(name)
 
-# update vault.conf
+    # decrypt
+    os.system(
+        f"openssl rsautl -decrypt -inkey keys/rsa.key -in vault/{name}.key -out vault/{name}.rawkey.tmp")
+    os.system(
+        f"openssl enc -d -aes-256-cbc -in vault/{name} -out vault/{name}.raw.tmp -pass file:vault/{name}.rawkey.tmp")
+
+    # read value to vault obj
+    value = ""
+    with open(f"vault/{name}.raw.tmp", 'r') as file:
+        value = file.read().replace('\n', '')
+
+    current_vault[name] = value
+
+
+# write to vault.conf
 f = open("vault.conf", "w")
-f.write(toml.dumps(always_merger.merge(unbaked_vault, current_vault)))
+f.write(toml.dumps({'vault': current_vault}))
 f.close()
 
-# remove tmp file
-os.remove(f"rawkey.tmp")
+# clean all tmp
+for file in glob.glob('*/*.tmp'):
+    os.remove(file)

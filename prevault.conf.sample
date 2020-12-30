@@ -1,5 +1,0 @@
-[addition]
-samantha = "mysql://localhost:3306/organizer?user=root&password=root"
-
-[redis_access]
-core = "37a31642-dddd-40d9-a754-499a6ff0806f"

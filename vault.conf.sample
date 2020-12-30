@@ -1,9 +1,7 @@
-[mysql_access]
-samantha = "mysql://localhost:3306/organizer?user=root&password=root"
-meta = "mysql://localhost:3306/organizer?user=root&password=root"
-corona = "mysql://localhost:3306/organizer?user=root&password=root"
+[vault]
 afala = "mysql://localhost:3306/organizer?user=root&password=root"
-
-[redis_access]
-core = "37a31642-7d70-40d9-a754-499a6ff0806f"
+meta = "mysql://localhost:3306/organizer?user=root&password=root"
 subcore = "9b229056-8e83-42fe-ba08-3eafe477ac09"
+samantha = "mysql://localhost:3306/organizer?user=root&password=root"
+corona = "mysql://localhost:3306/organizer?user=root&password=root"
+core = "37a31642-7d70-40d9-a754-499a6ff0806f"
