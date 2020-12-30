@@ -9,14 +9,14 @@ To test out this x requires:
 
 ## Usage
 ### Initializing
-Vault requires a public and private RSA key pair. You can generate one with openssl:
+Vault requires a public and private RSA key pair. If you dont have one, you can generate one with openssl:
 ```sh
-$ ssh-keygen -f keys/rsa.key
-$ ssh-keygen -m pem -f keys/rsa.key
-$ openssl rsa -in ./keys/rsa.key -pubout -outform pem > ./keys/rsa.key.pub
+$ make init
 ```
 
 ### Baking and unbaking vault
+> **To bake the vault you only need public key. To unbake you need private key.**
+
 Baking and unbaking vault are as simple as:
 ```sh
 # unbake default vault file
@@ -26,13 +26,11 @@ done
 
 # see unbaked vault file (or update it as you want)
 $ cat vault.conf
-[mysql_access]
+[vault]
 samantha = mysql://localhost:3306/organizer?user=root&password=root
 meta = mysql://localhost:3306/organizer?user=root&password=root
 corona = mysql://localhost:3306/organizer?user=root&password=root
 afala = mysql://localhost:3306/organizer?user=root&password=root
-
-[redis_access]
 core = 37a31642-7d70-40d9-a754-499a6ff0806f
 subcore = 9b229056-8e83-42fe-ba08-3eafe477ac09
 
@@ -41,6 +39,7 @@ $ make bake
 baking...
 done
 ```
+
 
 ## References
 - https://www.czeskis.com/random/openssl-encrypt-file.html

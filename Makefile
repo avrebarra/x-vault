@@ -2,6 +2,9 @@
 init:
 	@echo init vault...
 	pip install deepmerge toml
+	ssh-keygen -f keys/rsa.key
+	ssh-keygen -m pem -f keys/rsa.key
+	openssl rsa -in ./keys/rsa.key -pubout -outform pem > ./keys/rsa.key.pub
 	@echo done
 
 ## bake: bake vault
