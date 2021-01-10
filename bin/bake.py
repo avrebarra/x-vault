@@ -33,7 +33,9 @@ os.system(
 os.system(
     f"openssl enc -aes-256-cbc -salt -in {fname} -out vault/{key} -pass file:vault/rawkey.tmp")
 
-
 # clean all tmp
 for file in glob.glob('*/*.tmp'):
     os.remove(file)
+
+print("done")
+sys.exit(0)

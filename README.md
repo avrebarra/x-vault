@@ -3,93 +3,42 @@ simple primitive secret management experiment using openssl asymmetric encryptio
 
 ## Required
 To test out this x requires:
-- pip & python3
+- python3
 - openssl
-- make
 
 ## Usage
 ### Initializing
 Vault requires a public and private RSA key pair. If you dont have one, you can generate one with openssl:
 ```sh
-$ make init
+# setup key
+ssh-keygen -f keys/rsa.key
+ssh-keygen -m pem -f keys/rsa.key
+openssl rsa -in ./keys/rsa.key -pubout -outform pem > ./keys/rsa.key.pub
+
+# remove placeholder
 $ rm ./vault/*
 ```
 
-### Baking and unbaking vault
+### Baking variable to vault
 > **To bake the vault you need public key (`rsa.key.pub`)**
 
-> **To unbake you need private key (`rsa.key`).**
-
-Baking and unbaking vault are as simple as:
+Baking as simple as:
 ```sh
-# test with sample vault file
-$ cp vault.conf.sample vault.conf
-$ cat vault.conf
-[vault]
-afala = "mysql://localhost:3306/organizer?user=root&password=root"
-meta = "mysql://localhost:3306/organizer?user=root&password=root"
-subcore = "9b229056-8e83-42fe-ba08-3eafe477ac09"
-samantha = "mysql://localhost:3306/organizer?user=root&password=root"
-corona = "mysql://localhost:3306/organizer?user=root&password=root"
-core = "37a31642-7d70-40d9-a754-499a6ff0806f"
-
 # bake vault
-$ make bake
-vault.conf file found!
-baking afala
-baking meta
-baking subcore
-baking samantha
-baking corona
-baking core
-done
-
-# unbake vault file
-$ make unbake
-afala
-meta
-subcore
-samantha
-corona
-core
+$ python3 bin/bake.py "afaladb" "mysql://localhost:3306/organizer?user=root&password=root"
+baking value into afaladb...
 done
 ```
 
-### Updating only one key
-> **Again, to update a key you need the public key (`rsa.key.pub`)**
+### Yielding variable from vault
+> **To yield/unbake you need private key (`rsa.key`).**
 
-You can update a key by adding the specified key to vault.conf file:
+Unbaking key from vault:
 ```sh
-$ nano vault.conf
-$ cat vault.conf
-[vault]
-core = "updated_value"
-
-$ make bake
-vault.conf file found!
-baking core
-done
-
-$ make unbake
-afala
-meta
-subcore
-samantha
-corona
-core
-done
-
-$ cat vault.conf
-[vault]
-afala = "mysql://localhost:3306/organizer?user=root&password=root"
-meta = "mysql://localhost:3306/organizer?user=root&password=root"
-subcore = "9b229056-8e83-42fe-ba08-3eafe477ac09"
-samantha = "mysql://localhost:3306/organizer?user=root&password=root"
-corona = "mysql://localhost:3306/organizer?user=root&password=root"
-core = "updated_value"
-
+# yield/unbake key from vault
+$ python3 bin/yield.py "afaladb"
+mysql://localhost:3306/organizer?user=root&password=root
 ```
-
 
 ## References
 - https://www.czeskis.com/random/openssl-encrypt-file.html
